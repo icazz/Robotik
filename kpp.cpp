@@ -25,7 +25,7 @@ void meet(char now){
     } 
 }
 
-void move(char& now, char& titik, int& col, int& row, vector<vector<char>>& map){
+void move(char& now, char titik, int& col, int& row, vector<vector<char>> map){
     int newCol = col, newRow = row;
     
     if (titik == 'R'){
