@@ -3,46 +3,50 @@
 using namespace std;
 int i, j, time = 0, speed = 2;
 bool strong = 0;
- 
+
 void meet(char now){
     //output kondisi bertemu
-    if (now == '.'){
-        time += speed;
-    } else if (now == 'M'){
-        printf("Bertemu dengan mekanik, siap membasmi rintangan\n");
-        strong = 1;
-        time += speed;
-    } else if (now == 'E'){
-        printf("Bertemu dengan electrical, kecepatan roda naik menjadi 200%\n");
-        time += speed;
-        speed = 1;
-    } else if (now == 'P'){
-        printf("Bertemu programmer handal\n");
-        time += speed;
-    } else if (now == 'O'){
-        printf ("Bertemu dengan official, diajak ngonten bareng\n");
-        time = (time + speed) * 2;
+    switch (now){
+        case '.':
+            time += speed;
+            break;
+        case 'M':
+            printf("Bertemu dengan mekanik, siap membasmi rintangan\n");
+            strong = 1;
+            time += speed;
+            break;
+        case 'E':
+            printf("Bertemu dengan electrical, kecepatan roda naik menjadi 200%\n");
+            time += speed;
+            speed = 1;
+            break;
+        case 'P':
+            printf("Bertemu programmer handal\n");
+            time += speed;
+            break;
+        case 'O':
+            printf ("Bertemu dengan official, diajak ngonten bareng\n");
+            time = (time + speed) * 2;
+            break;
     } 
 }
 
 void move(char& now, char titik, int& col, int& row, vector<vector<char>> map){
     int newCol = col, newRow = row;
-    
-    if (titik == 'R'){
-        newRow++;
-    } else if (titik == 'L'){
-        newRow--;
-    } else if (titik == 'D') {
-        newCol++;
-    } else {
-        newCol--;
+    //menentukan gerak, pindah titik
+    switch (titik){
+        case 'R': newRow++; break;
+        case 'L': newRow--; break;
+        case 'D': newCol++; break;
+        case 'U': newCol--; break;
     }
 
-    //cek batas
+    //cek batas, jika gerakan keluar map, maka waktu tidak dihitung
     if (newCol >= 0 && newCol < map.size() && newRow >= 0 && newRow < map[0].size()){
         now = map[newCol][newRow];
-        //jika bertemu X
+        //jika bertemu rintangan(X)
         if (now == 'X'){
+            //robot tidak berpindah jika belum bertemu mekanik
             if (strong){
                 time += speed;
                 col = newCol;
@@ -52,6 +56,7 @@ void move(char& now, char titik, int& col, int& row, vector<vector<char>> map){
                 now = map[col][row];
             }
         } else {
+            //panggil fungsi move
             meet(now);
             col = newCol;
             row = newRow;
@@ -79,10 +84,10 @@ int main(){
         scanf(" %c", &gerak[i]);
     }
 
-    //eksekusi
+    //menentukan titik start
     int col = 0, row = 0;
     char now = map[col][row];
-    
+    //perulangan gerakan
     for (i = 0; i < p; ++i){
         move(now, gerak[i], col, row, map);
     }
