@@ -31,19 +31,19 @@ void meet(char now){
     } 
 }
 
-void move(char& now, char titik, int& col, int& row, vector<vector<char>> map){
-    int newCol = col, newRow = row;
+void move(char& now, char titik, int& row, int& col, vector<vector<char>> map){
+    int newRow = row, newCol = col;
     //menentukan gerak, pindah titik
     switch (titik){
-        case 'R': newRow++; break;
-        case 'L': newRow--; break;
-        case 'D': newCol++; break;
-        case 'U': newCol--; break;
+        case 'R': newCol++; break;
+        case 'L': newCol--; break;
+        case 'D': newRow++; break;
+        case 'U': newRow--; break;
     }
 
     //cek batas, jika gerakan keluar map, maka waktu tidak dihitung
-    if (newCol >= 0 && newCol < map.size() && newRow >= 0 && newRow < map[0].size()){
-        now = map[newCol][newRow];
+    if (newRow >= 0 && newRow < map.size() && newCol >= 0 && newCol < map[0].size()){
+        now = map[newRow][newCol];
         //jika bertemu rintangan(X)
         if (now == 'X'){
             //robot tidak berpindah jika belum bertemu mekanik
@@ -53,13 +53,23 @@ void move(char& now, char titik, int& col, int& row, vector<vector<char>> map){
                 row = newRow;
             } else {
                 printf("Robot nabrak, silahkan diperbaiki\n");
-                now = map[col][row];
+                now = map[row][col];
             }
         } else {
             //panggil fungsi move
             meet(now);
             col = newCol;
             row = newRow;
+        }
+    }
+}
+
+void start(int& row, int& col, int n, int m, vector<vector<char>> map){
+    for (i = 0; i < n; ++i){
+        for (j = 0; j < m; ++j){
+            if (map[i][j] == 'S'){
+                row = i; col = j;
+            }
         }
     }
 }
@@ -84,15 +94,18 @@ int main(){
         scanf(" %c", &gerak[i]);
     }
 
-    //menentukan titik start
-    int col = 0, row = 0;
-    char now = map[col][row];
+    //mencari start (jika titik start tidak selalu di pojok kiri atas)
+    int row, col;
+    start(row, col, n, m, map);
+    char now = map[row][col];
+
     //perulangan gerakan
     for (i = 0; i < p; ++i){
-        move(now, gerak[i], col, row, map);
+        move(now, gerak[i], row, col, map);
     }
+
     //cek kondisi akhir
-    if (map[col][row] == 'F'){
+    if (map[row][col] == 'F'){
         printf("Robot berhasil mencapai tujuan\n");
         time += speed;
     } else {
